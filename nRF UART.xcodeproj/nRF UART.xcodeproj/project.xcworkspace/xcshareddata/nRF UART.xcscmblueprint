@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "299F51EFB5BDBEC03CB6F0CB75D051C432C7092E",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "299F51EFB5BDBEC03CB6F0CB75D051C432C7092E" : 0,
+    "80FE185FAFF442C9672B1D4EE9AE071A2AD746AB" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "C7AE64AB-C8AF-425D-B1FA-6B94DEB20A78",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "299F51EFB5BDBEC03CB6F0CB75D051C432C7092E" : "Artemis\/",
+    "80FE185FAFF442C9672B1D4EE9AE071A2AD746AB" : ""
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "nRF UART",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "nRFUart\/nRF UART.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/SillyKnight\/Artemis.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "299F51EFB5BDBEC03CB6F0CB75D051C432C7092E"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/SillyKnight\/LaLexer.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "80FE185FAFF442C9672B1D4EE9AE071A2AD746AB"
+    }
+  ]
+}
