@@ -1,2 +1,1 @@
-# uart
-Nordic
+#uart
