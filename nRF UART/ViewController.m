@@ -26,6 +26,7 @@ typedef enum
 @property CBCentralManager *cm;
 @property ConnectionState state;
 @property UARTPeripheral *currentPeripheral;
+@property (strong,nonatomic) NSMutableArray *peripherals;
 @end
 
 @implementation ViewController
@@ -35,7 +36,7 @@ typedef enum
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+    // Do any additional setup after loading the view, typically from a nib.
     self.cm = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
     
     [self addTextToConsole:@"Did start application" dataType:LOGGING];
@@ -44,13 +45,40 @@ typedef enum
     [self.tableView setSeparatorColor:[UIColor clearColor]];
     
     [self.sendTextField setDelegate:self];
+    
+    self.peripherals=[NSMutableArray new];
 }
 
-// Auto UART connect
-- (void)viewDidAppear:(BOOL)animated
-{
 
+- (void)viewDidAppear:(BOOL)animated {
+    
+    switch (self.state) {
+        case IDLE:
+            self.state = SCANNING;
+            
+            NSLog(@"Started scan ...");
+            [self.connectButton setTitle:@"Scanning ..." forState:UIControlStateNormal];
+            
+            [self.cm scanForPeripheralsWithServices:@[UARTPeripheral.uartServiceUUID] options:@{CBCentralManagerScanOptionAllowDuplicatesKey: [NSNumber numberWithBool:NO]}];
+            break;
+            
+        case SCANNING:
+            self.state = IDLE;
+            
+            NSLog(@"Stopped scan");
+            [self.connectButton setTitle:@"Connect" forState:UIControlStateNormal];
+            
+            [self.cm stopScan];
+            break;
+            
+        case CONNECTED:
+            NSLog(@"Disconnect peripheral %@", self.currentPeripheral.peripheral.name);
+            [self.cm cancelPeripheralConnection:self.currentPeripheral.peripheral];
+            break;
+    }
+    
 }
+
 
 - (void)didReceiveMemoryWarning
 {
@@ -74,10 +102,10 @@ typedef enum
             
         case SCANNING:
             self.state = IDLE;
-
+            
             NSLog(@"Stopped scan");
             [self.connectButton setTitle:@"Connect" forState:UIControlStateNormal];
-
+            
             [self.cm stopScan];
             break;
             
@@ -90,7 +118,7 @@ typedef enum
 
 - (IBAction)sendTextFieldEditingDidBegin:(id)sender {
     [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-//    [self.tableView setContentOffset:CGPointMake(0, 220) animated:YES];
+    //    [self.tableView setContentOffset:CGPointMake(0, 220) animated:YES];
 }
 
 - (IBAction)sendTextFieldEditingChanged:(id)sender {
@@ -122,6 +150,7 @@ typedef enum
     
     [self.currentPeripheral writeString:self.sendTextField.text];
 }
+
 - (void) didReadHardwareRevisionString:(NSString *)string
 {
     [self addTextToConsole:[NSString stringWithFormat:@"Hardware revision: %@", string] dataType:LOGGING];
@@ -166,31 +195,8 @@ typedef enum
     if (central.state == CBCentralManagerStatePoweredOn)
     {
         [self.connectButton setEnabled:YES];
-        switch (self.state) {
-            case IDLE:
-                self.state = SCANNING;
-                
-                NSLog(@"Started scan ...");
-                [self.connectButton setTitle:@"Scanning ..." forState:UIControlStateNormal];
-                
-                [self.cm scanForPeripheralsWithServices:@[UARTPeripheral.uartServiceUUID] options:@{CBCentralManagerScanOptionAllowDuplicatesKey: [NSNumber numberWithBool:NO]}];
-                break;
-                
-            case SCANNING:
-                self.state = IDLE;
-                NSLog(@"Stopped scan");
-                [self.connectButton setTitle:@"Connect" forState:UIControlStateNormal];
-                
-                [self.cm stopScan];
-                
-                break;
-                
-            case CONNECTED:
-                NSLog(@"Disconnect peripheral %@", self.currentPeripheral.peripheral.name);
-                [self.cm cancelPeripheralConnection:self.currentPeripheral.peripheral];
-                break;
-        }
     }
+    
 }
 
 - (void) centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI
@@ -201,12 +207,15 @@ typedef enum
     self.currentPeripheral = [[UARTPeripheral alloc] initWithPeripheral:peripheral delegate:self];
     
     [self.cm connectPeripheral:peripheral options:@{CBConnectPeripheralOptionNotifyOnDisconnectionKey: [NSNumber numberWithBool:YES]}];
+    NSLog(@"reached this %@", [RSSI stringValue]);
+    [self.peripherals addObject:peripheral];
+    [central connectPeripheral:peripheral options:nil];
 }
 
 - (void) centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral
 {
     NSLog(@"Did connect peripheral %@", peripheral.name);
-
+    
     [self addTextToConsole:[NSString stringWithFormat:@"Did connect to %@", peripheral.name] dataType:LOGGING];
     
     self.state = CONNECTED;
@@ -218,6 +227,7 @@ typedef enum
     {
         [self.currentPeripheral didConnect];
     }
+    
     [self addTextToConsole:@"1" dataType:TX];
     [self.currentPeripheral writeString:@"1"];
 }

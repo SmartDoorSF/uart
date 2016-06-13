@@ -155,7 +155,7 @@
 				ORGANIZATIONNAME = "Nordic Semiconductor";
 				TargetAttributes = {
 					93C9A60716A0BAAF00E6BF8E = {
-						DevelopmentTeam = FXM2JQ4994;
+						DevelopmentTeam = 6YJMXB2FR4;
 					};
 				};
 			};

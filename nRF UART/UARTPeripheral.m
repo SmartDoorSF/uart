@@ -50,6 +50,7 @@
 
 - (UARTPeripheral *) initWithPeripheral:(CBPeripheral*)peripheral delegate:(id<UARTPeripheralDelegate>) delegate
 {
+    
     if (self = [super init])
     {
         _peripheral = peripheral;
@@ -87,13 +88,10 @@
     }
 }
 
-- (void) writeRawData:(NSData *) data
-{
-    
-}
 
 - (void) peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error
 {
+    
     if (error)
     {
         NSLog(@"Error discovering services: %@", error);
@@ -118,6 +116,7 @@
 
 - (void) peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error
 {
+    
     if (error)
     {
         NSLog(@"Error discovering characteristics: %@", error);
@@ -130,8 +129,8 @@
         {
             NSLog(@"Found RX characteristic");
             self.rxCharacteristic = c;
-            
             [self.peripheral setNotifyValue:YES forCharacteristic:self.rxCharacteristic];
+            NSLog(@"peripheral %@", self.peripheral);
         }
         else if ([c.UUID isEqual:self.class.txCharacteristicUUID])
         {
@@ -148,6 +147,7 @@
 
 - (void) peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
 {
+    
     if (error)
     {
         NSLog(@"Error receiving notification for characteristic %@: %@", characteristic, error);
